@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block lab %}РГЗ{% endblock %}
+
+{% block main %}
+<body style="font-family: 'Arial', sans-serif; margin: 0; padding: 0; background-color: #f4f4f4;">
+
+    <div style="padding: 20px; text-align: center;">
+        <h2 style="color: #333; margin-bottom: 20px;">Пожалуйста, авторизуйтесь</h2>
+        <div style="margin-bottom: 20px;">
+            {% for error in errors %}
+                <p style="color: red;">{{ error }}</p>
+            {% endfor %}
+        </div>
+        <form method="post" style="max-width: 300px; margin: 0 auto;">
+            <div style="margin-bottom: 15px;">
+                <label for="username" style="display: block; margin-bottom: 5px;">Пользователь</label>
+                <input class="pole" type="text" id="username" name="username" value="{{ username or '' }}" style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px;">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label for="password" style="display: block; margin-bottom: 5px;">Пароль</label>
+                <input class="pole" type="password" id="password" name="password" value="{{ password or '' }}" style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px;">
+            </div>
+            <div style="text-align: center;">
+                <button type="reset" style="background-color: #ccc; color: #333; padding: 8px 12px; border: none; cursor: pointer; border-radius: 5px; margin-right: 10px;">Отмена</button>
+                <button type="submit" style="background-color: #333; color: white; padding: 8px 12px; border: none; cursor: pointer; border-radius: 5px;">Войти</button>
+            </div>
+        </form>
+        <a href="/rgz" style="text-decoration: none; display: block; margin-top: 20px;">
+            <button style="background-color: #555; color: white; padding: 8px 12px; border: none; cursor: pointer; border-radius: 5px;">Вернуться назад</button>
+        </a>
+    </div>
+
+</body>
+</html>
+{% endblock %}

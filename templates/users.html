@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block lab %}РГЗ{% endblock %}
+
+{% block main %}
+<body style="font-family: 'Arial', sans-serif; margin: 0; padding: 0; background-color: #f4f4f4;">
+
+    <h1 style="text-align: center; margin: 20px 0; color: #333;">Список пользователей - отправка сообщений</h1>
+
+    <ul style="list-style: none; padding: 0; text-align: center;">
+        {% for user in users %}
+            <li style="border: 1px solid #ccc; margin: 10px; padding: 10px; border-radius: 5px; background-color: #fff;">
+                <span style="margin-right: 10px;">{{ user[1] }}</span>
+                <form method="post" action="{{ url_for('rgz.send_message', recipient_id=user[0]) }}" style="display: inline-block;">
+                    <input type="text" name="user_comment" placeholder="Введите сообщение" style="padding: 5px; margin-right: 5px; border: 1px solid #ccc; border-radius: 3px;">
+                    <button type="submit" style="background-color: #333; color: white; padding: 5px 10px; border: none; cursor: pointer; border-radius: 3px;">Отправить</button>
+                </form>
+                {% if is_admin %}
+                    <a href="{{ url_for('rgz.edit_user', user_id=user[0]) }}" style="margin-left: 10px; text-decoration: none;">
+                        <button style="background-color: #555; color: white; padding: 5px 10px; border: none; cursor: pointer; border-radius: 3px;">Редактировать</button>
+                    </a>
+                    <a href="{{ url_for('rgz.delete_user', user_id=user[0]) }}" onclick="return confirm('Вы уверены?')" style="margin-left: 10px; text-decoration: none;">
+                        <button style="background-color: #d9534f; color: white; padding: 5px 10px; border: none; cursor: pointer; border-radius: 3px;">Удалить</button>
+                    </a>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+
+    <a href="/rgz" style="text-decoration: none; display: block; margin: 20px auto; width: 150px; text-align: center;">
+        <button style="background-color: #555; color: white; padding: 10px; border: none; cursor: pointer; border-radius: 5px;">Вернуться назад</button>
+    </a>
+
+</body>
+</html>
+{% endblock %}

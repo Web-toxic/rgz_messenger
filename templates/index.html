@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block lab %}РГЗ{% endblock %}
+
+{% block main %}
+<body style="font-family: 'Arial', sans-serif; margin: 0; padding: 0; background-color: #f4f4f4;">
+
+    <div style="padding: 20px; text-align: center;">
+        <h1 style="color: #333;">Мессенджер</h1>
+        <nav>
+            <ul style="list-style: none; padding: 0; display: flex; justify-content: space-around; background-color: #333; padding: 10px;">
+                <li><a href="/rgz/massege" style="color: white; text-decoration: none; padding: 10px; border-radius: 8px; background-color: #555; display: inline-block;">Входящие</a></li>
+                <li><a href="/rgz/users" style="color: white; text-decoration: none; padding: 10px; border-radius: 8px; background-color: #555; display: inline-block; margin-left: 10px;">Отправка сообщений</a></li>
+                <li><a href="/rgz/logins" style="color: white; text-decoration: none; padding: 10px; border-radius: 8px; background-color: #555; display: inline-block; margin-left: 10px;">Логин</a></li>
+                <li><a href="/rgz/register" style="color: white; text-decoration: none; padding: 10px; border-radius: 8px; background-color: #555; display: inline-block; margin-left: 10px;">Регистрация</a></li>
+            </ul>
+        </nav>
+
+        {% if user_is_authenticated %}
+            <p style="margin-top: 10px;">Добро пожаловать, <span style="font-weight: bold; color: #8953c7;">{{ current_user.username }}!</span></p>
+            <a href="{{ url_for('rgz.logout') }}" style="text-decoration: none;">
+                <button style="background-color: #333; color: white; padding: 8px 12px; border: none; cursor: pointer; border-radius: 8px;">Выход</button>
+            </a>
+        {% else %}
+            <p style="margin-top: 10px;">Добро пожаловать, Гость!</p>
+        {% endif %}
+    </div>
+
+</body>
+</html>
+{% endblock %}

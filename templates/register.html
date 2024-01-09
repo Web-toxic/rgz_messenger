@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block lab %}РГЗ{% endblock %}
+
+{% block main %}
+<body style="font-family: 'Arial', sans-serif; margin: 0; padding: 0; background-color: #f4f4f4;">
+
+    <div style="padding: 20px; text-align: center;">
+        <link rel="stylesheet" href="{{ url_for('static', filename='rgz.css')}}">
+        <div style="max-width: 300px; margin: 0 auto;">
+            <form method="post" style="margin-top: 20px;">
+                <h1 style="color: #333; margin-bottom: 20px;">Регистрация пользователя!</h1>
+
+                <div style="margin-bottom: 20px;">
+                    {% for error in errors %}
+                        <p style="color: red;">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <input class="pole" type="text" name="username" placeholder="Логин" style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px;">
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <input class="pole" type="password" name="password" placeholder="Пароль" style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px;">
+                </div>
+
+                <button type="submit" style="background-color: #333; color: white; padding: 8px 12px; border: none; cursor: pointer; border-radius: 5px;">Зарегистрироваться</button>
+            </form>
+
+            <a href="/rgz" style="text-decoration: none; display: block; margin-top: 20px;">
+                <button style="background-color: #555; color: white; padding: 8px 12px; border: none; cursor: pointer; border-radius: 5px;">Вернуться назад</button>
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>
+{% endblock %}
