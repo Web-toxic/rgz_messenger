@@ -5,3 +5,4 @@ from rgz import rgz
 app = Flask(__name__)
 app.secret_key = "123"
 app.register_blueprint(rgz)
+

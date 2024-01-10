@@ -1,7 +1,6 @@
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask import Blueprint, redirect, render_template, request, session, jsonify
 import psycopg2
-from datetime import datetime
 
 rgz = Blueprint("rgz", __name__)
 
@@ -25,19 +24,21 @@ def dbClose(cursor, connection):
     connection.close()
 
 # Функция для проверки разрешений пользователя
-def user_has_permission_to_create_article(user_id):
+def user_has_permission(user_id):
     # Подключение к базе данных
     conn = dbConnect()
     cur = conn.cursor()
 
     try:
         # Проверка существования пользователя с указанным ID
-        cur.execute("SELECT id FROM users WHERE id = %s", (user_id,)) #Это сам SQL-запрос. В данном случае он выбирает id из таблицы users, где значение id равно заданному значению, переданному через параметр.
-        result = cur.fetchone() #извлекает одну строку из результата запроса.
-        return result is not None #указывает, что у пользователя есть права на создание статьи.
+        cur.execute("SELECT id FROM users WHERE id = %s", (user_id,)) # Это сам SQL-запрос. В данном случае он выбирает 
+        # id из таблицы users, где значение id равно заданному значению, переданному через параметр.
+        result = cur.fetchone() # извлекает одну строку из результата запроса.
+        return result is not None # указывает, что у пользователя есть права на ведение диалога.
     finally:
         # Закрытие курсора и соединения с базой данных
         dbClose(cur, conn)
+
 
 @rgz.route("/")
 def slesh():
@@ -57,6 +58,7 @@ def main():
 
     # Отображение главной страницы
     return render_template("index.html", user_is_authenticated=user_is_authenticated, current_user=current_user)
+
 
 @rgz.route('/rgz/register', methods=["GET", "POST"]) #Эта строка указывает на создание обработчика маршрута для пути
 def registerPage(): #является обработчиком для данного маршрута
@@ -99,6 +101,7 @@ def registerPage(): #является обработчиком для данно
 #Если проверки пройдены успешно, то транзакция фиксируется и соединение с базой данных закрывается.
     # Перенаправление на страницу логина после успешной регистрации
     return redirect("/rgz/logins")
+
 
 @rgz.route('/rgz/logins', methods=["GET", "POST"])
 def loginPage():#является обработчиком для данного маршрута
@@ -145,6 +148,8 @@ def loginPage():#является обработчиком для данного
             errors.append(f"Ошибка при выполнении запроса: {str(e)}")
             return render_template("login.html", errors=errors)
 #В случае возникновения исключения, ошибка перехватывается, и выполняется код в блоке except. В данном коде добавляется сообщение об ошибке (включающее текст самой ошибки str(e)) в список 
+
+
 @rgz.route('/rgz/logout')
 def logout():
     # Выход пользователя из системы
@@ -164,7 +169,7 @@ def show_users():
     user_id = session['user_id']
     is_admin = session.get('user_id') == ADMIN_USER_ID
 
-    if user_has_permission_to_create_article(user_id):
+    if user_has_permission(user_id):
         conn = dbConnect()
         cur = conn.cursor()
 
@@ -180,6 +185,7 @@ def show_users():
     else:
         # Перенаправление на домашнюю страницу, если у пользователя нет прав
         return redirect('/rgz')
+
 
 # Маршрут для редактирования пользователя (только для админа)
 @rgz.route("/rgz/users/edit/<int:user_id>", methods=["GET", "POST"])
@@ -205,6 +211,7 @@ def edit_user(user_id):
             return redirect('/rgz/users')
     finally:
         dbClose(cur, conn)
+
 
 # Маршрут для отправки сообщения (POST-запрос)
 @rgz.route("/rgz/send_message/<int:recipient_id>", methods=["POST"])
@@ -232,6 +239,7 @@ def send_message(recipient_id):
 
     return redirect('/rgz/users')
 
+
 # Маршрут для удаления сообщений (POST-запрос)
 @rgz.route("/rgz/delete_messages/<int:recipient_id>", methods=["POST"])
 def delete_messages(recipient_id):
@@ -256,6 +264,7 @@ def delete_messages(recipient_id):
         dbClose(cur, conn)
 
     return redirect('/rgz/users')
+
 
 # Маршрут для отображения сообщений пользователя
 @rgz.route("/rgz/massege")
@@ -282,6 +291,7 @@ def massege():
         return render_template("massege.html", messages=messages)
     finally:
         dbClose(cur, conn)
+
 
 # Маршрут для удаления сообщения (GET-запрос)
 @rgz.route("/rgz/delete_message/<int:message_id>")
@@ -310,6 +320,7 @@ def delete_message(message_id):
 
     return redirect('/rgz/massege')
 
+
 # Маршрут для удаления пользователя (только для админа)
 @rgz.route("/rgz/users/delete/<int:user_id>")
 def delete_user(user_id):
@@ -321,6 +332,9 @@ def delete_user(user_id):
     cur = conn.cursor()
 
     try:
+        # Удаление пользователя's messages
+        cur.execute("DELETE FROM message WHERE sender_id = %s OR recipient_id = %s;", (user_id, user_id))
+
         # Удаление пользователя
         cur.execute("DELETE FROM users WHERE id = %s;", (user_id,))
         conn.commit()
