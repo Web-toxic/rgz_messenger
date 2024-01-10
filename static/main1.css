@@ -26,11 +26,6 @@ footer {
     width: 100%;
 }
 
-header span {
-    font-weight: bold;
-    color: #ffd700; 
-}
-
 nav {
     display: flex;
     justify-content: space-around;
